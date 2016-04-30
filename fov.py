@@ -13,12 +13,20 @@ taxRevenue.drop(taxRevenue.columns[[-1, 0, 2, 3]], axis=1, inplace=True)
 health = pd.read_excel("health/API_SH.XPD.TOTL.ZS_DS2_en_v2.xls", skiprows=3)
 health.drop(health.columns[[-1, 0, 2, 3]], axis=1, inplace=True)
 
+association = pd.read_csv("education/API_SE.XPD.TOTL.GD.ZS_DS2_en_v2.csv", skiprows=4)
+association.drop(association.columns[range(2,61)], axis=1, inplace=True)
+
 education.rename(columns = {"Country Code": "country_code"}, inplace = True)
 health.rename(columns = {"Country Code": "country_code"}, inplace=True)
 taxRevenue.rename(columns = {"Country Code": "country_code"}, inplace=True)
 cashSurplusDeficit.rename(columns = {"Country Code": "country_code"}, inplace=True)
+association.rename(columns = {"Country Code": "country_code"}, inplace=True)
+association.rename(columns = {"Country Name": "country_name"}, inplace=True)
+temp = association[["country_code", "country_name"]]
+	
 
 education.to_sql(name='education', con=cnx, if_exists = 'append', index=False, flavor="mysql")
 cashSurplusDeficit.to_sql(name='cashSurplusDeficit', con=cnx, if_exists = 'append', index=False, flavor="mysql")
 health.to_sql(name='health', con=cnx, if_exists = 'append', index=False, flavor="mysql")
 taxRevenue.to_sql(name='taxRevenue', con=cnx, if_exists = 'append', index=False, flavor="mysql")
+temp.to_sql(name='association', con=cnx, if_exists = 'append', index=False, flavor="mysql")
